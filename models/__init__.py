@@ -3,6 +3,7 @@ from werkzeug.security import check_password_hash
 
 def connect():
     session = sqlite3.connect("Database.db")
+    session.row_factory = sqlite3.Row
     session.execute("PRAGMA foreign_keys = ON")
     return session
 
@@ -34,8 +35,8 @@ def init_database():
         prix REAL NOT NULL CHECK (prix >= 0),
         statut TEXT NOT NULL DEFAULT 'en_attente' CHECK (statut IN ('en_attente', 'acceptee', 'en_cours', 'terminee', 'annulee')),
         date_creation TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (commercant_id) REFERENCES utilisateurs(id),
-        FOREIGN KEY (livreur_id) REFERENCES utilisateurs(id)
+        FOREIGN KEY (commercant_id) REFERENCES USERS(id),
+        FOREIGN KEY (livreur_id) REFERENCES USERS(id)
     )
     """)
 
@@ -44,13 +45,13 @@ def init_database():
 
 
     
-def add_user(nom, prenom, mail,password):
+def add_user(nom, prenom, mail,password,role):
     conn = connect()
     try:
         c = conn.cursor()
         c.execute(
-            "INSERT INTO USERS (NOM, PRENOM, MAIL,PASSWORD) VALUES (?, ?, ?,?)",
-            (nom, prenom, mail,password)
+            "INSERT INTO USERS (NOM, PRENOM, MAIL,PASSWORD,ROLE) VALUES (?, ?, ?,? ,?)",
+            (nom, prenom, mail,password,role)
         )
         conn.commit()
         return True
@@ -64,26 +65,36 @@ def add_user(nom, prenom, mail,password):
     finally:
         conn.close()
 
-def db_checking(mail,password):
+def db_checking(mail, password):
     session = connect()
-    curseur = session.cursor()
 
-    curseur.execute ("SELECT NOM,PRENOM,MAIL,PASSWORD FROM USERS WHERE MAIL = ?" ,(mail,))
+    try:
+        curseur = session.cursor()
 
+        curseur.execute(
+            """
+            SELECT ID, NOM, PRENOM, MAIL, PASSWORD, ROLE
+            FROM USERS
+            WHERE MAIL = ?
+            """,
+            (mail,)
+        )
 
-    user = curseur.fetchone()
-    session.close()
-    if user is None:
+        user = curseur.fetchone()
+
+        if user is None:
+            return None
+
+        if check_password_hash(user[4], password):
+            return {
+                "id": user[0],
+                "nom": user[1],
+                "prenom": user[2],
+                "mail": user[3],
+                "role": user[5]
+            }
+
         return None
 
-    if check_password_hash (user[3],password):
-        return {
-            "nom" : user[0],
-            "prenom" : user[1],
-            "mail" : user[2]
-        }
-    
-
-
-def close_session(session):
-    session.close()
+    finally:
+        session.close()

@@ -37,7 +37,7 @@ formulaire.addEventListener("submit", async function (e) {
             console.log("yes")
             confirm.textContent = " Bienvenue dans votre session " + resp.nom + " " + resp.prenom;
             await sleep(2000);
-            window.location.replace("/home");
+            window.location.replace(resp.url);
         }
 
         else {

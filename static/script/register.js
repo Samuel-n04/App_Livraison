@@ -17,7 +17,10 @@ form.addEventListener("submit", async (e) => {
     if (data.code == "Created") {
         confirm.textContent = "Inscription Validée, Bienvenue " + data.nom + " " + data.prenom;
         sleep(2000);
-        window.location.replace("/home")
+
+        window.location.replace(data.url);
+
+
     } else {
         confirm.textContent = data.message || "Erreur";
     }
