@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="{{ url_for('static' , filename='style/style.css')}}">
+
+</head>
+
+<body>
+
+    <h1> Voici l'accueil de la plateforme de livraison</h1>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('register_url') }}">S'inscrire</a></li>
+            <li><a href="{{url_for('login_url')}}">Se connecter</a></li>
+        </ul>
+    </nav>
+
+
+
+</body>
+
+</html>

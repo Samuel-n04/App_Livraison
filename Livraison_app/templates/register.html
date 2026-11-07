@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Client</title>
+    <link rel="stylesheet" href="{{ url_for('static' , filename='style/style.css')}}">
+
+</head>
+
+<body>
+
+    <h1> Voici l'accueil de la plateforme de livraison</h1>
+
+    <form id="formulaire" action="/register">
+
+        <label for="nom">nom</label>
+        <input id="nom" type="text" name="nom" required>
+
+        <label for="prenom">Prenom</label>
+        <input id="prenom" type="text" name="prenom" required>
+
+        <label for="mail"> Mail</label>
+        <input id="mail" type="email" name="mail" required>
+
+        <label for="password"> Mot de Passe</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" id="submit"> Valider</button>
+    </form>
+
+    <div id="confirm"></div>
+
+
+    <a href="/"> Revenir a l'accueil</a>
+
+
+
+
+
+
+    <script src="../static/script/register.js"></script>
+</body>
+
+</html>
